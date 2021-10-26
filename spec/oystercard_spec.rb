@@ -23,6 +23,25 @@ describe Oystercard do
         end
     end
 
+    # describe '#in_journey?' do
+    #     it 'returns true when in a journey' do
+        
+    # end
+
+    describe '#touch_in' do
+        it 'sets in_journey? to true if currently false' do
+            subject.touch_in
+            expect(subject.journey).to be true
+        end
+    end
+
+    describe "#touch_out" do
+        it 'sets in_journey? to false if currently true' do
+            subject.touch_in    
+            subject.touch_out
+            expect(subject).to_not be_in_journey
+        end
+    end 
 end
 
 
