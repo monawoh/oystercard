@@ -23,25 +23,30 @@ describe Oystercard do
         end
     end
 
-    # describe '#in_journey?' do
-    #     it 'returns true when in a journey' do
-        
-    # end
-
     describe '#touch_in' do
         it 'sets in_journey? to true if currently false' do
-            subject.touch_in
+            top_up_and_touch(10, false) 
             expect(subject.journey).to be true
+        end
+
+        it 'requires the minimum amount to begin a journey' do
+            expect { subject.touch_in }.to raise_error "Not enough money on card"
         end
     end
 
     describe "#touch_out" do
         it 'sets in_journey? to false if currently true' do
-            subject.touch_in    
-            subject.touch_out
+            top_up_and_touch(10, true)   
             expect(subject).to_not be_in_journey
         end
-    end 
+    end
+
+    def top_up_and_touch(amount, touch_out_after)
+        subject.top_up(amount)
+        subject.touch_in
+        subject.touch_out if touch_out_after
+    end
+
 end
 
 
