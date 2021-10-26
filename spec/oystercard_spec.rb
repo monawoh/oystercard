@@ -1,6 +1,8 @@
 require_relative './../lib/oystercard.rb'
 
 describe Oystercard do
+    let(:entry_station) { double :entry_station }
+
     it 'balance default value 0' do
         expect(subject.balance).to eq(0)
     end
@@ -25,14 +27,25 @@ describe Oystercard do
     # end
 
     describe '#touch_in' do
-        it 'sets in_journey? to true if currently false' do
-            top_up_and_touch(10, false) 
-            expect(subject.journey).to be true
-        end
+        # it 'sets in_journey? to true if currently false' do
+        #     top_up_and_touch(10, false) 
+        #     expect(subject.journey).to be true
+        # end
 
         it 'requires the minimum amount to begin a journey' do
-            expect { subject.touch_in }.to raise_error "Not enough money on card"
+            expect { subject.touch_in(:entry_station) }.to raise_error "Not enough money on card"
         end
+
+        it 'records the entry station' do
+            top_up_and_touch(10, false)
+            expect(subject.entry_station).to eq :entry_station
+        end
+    end
+
+    def top_up_and_touch(amount, touch_out_after)
+        subject.top_up(amount)
+        subject.touch_in(:entry_station)
+        subject.touch_out if touch_out_after
     end
 
     describe "#touch_out" do
@@ -45,15 +58,12 @@ describe Oystercard do
             top_up_and_touch(10, false)
             expect{ subject.touch_out }.to change{subject.balance}.by(-2)
         end
+
+        it 'sets entry_station to nil' do
+            top_up_and_touch(10, true)
+            expect(subject.entry_station).to eq nil
+        end
     end
-
-
-    def top_up_and_touch(amount, touch_out_after)
-        subject.top_up(amount)
-        subject.touch_in
-        subject.touch_out if touch_out_after
-    end
-
     
 end
 
