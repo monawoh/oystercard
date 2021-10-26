@@ -17,11 +17,12 @@ describe Oystercard do
         end
     end
 
-    describe '#deduct' do
-        it 'decreases amount in card' do
-            expect{ subject.deduct(2.50) }.to change{ subject.balance }.from(0).to(-2.50)
-        end
-    end
+    # deduct moved to private so test removed.
+    # describe '#deduct' do
+    #     it 'decreases amount in card' do
+    #     expect{ subject.send(:deduct, 2.50)}.to change{ subject.balance }.from(0).to(-2.50)
+    #     end
+    # end
 
     describe '#touch_in' do
         it 'sets in_journey? to true if currently false' do
@@ -39,7 +40,13 @@ describe Oystercard do
             top_up_and_touch(10, true)   
             expect(subject).to_not be_in_journey
         end
+
+        it 'deducts money on use' do
+            top_up_and_touch(10, false)
+            expect{ subject.touch_out }.to change{subject.balance}.by(-2)
+        end
     end
+
 
     def top_up_and_touch(amount, touch_out_after)
         subject.top_up(amount)
@@ -47,6 +54,7 @@ describe Oystercard do
         subject.touch_out if touch_out_after
     end
 
+    
 end
 
 
