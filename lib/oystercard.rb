@@ -3,21 +3,18 @@ class Oystercard
     LIMIT = 90
     attr_reader :balance, :limit
     
-    
     def initialize
         @balance = DEFAULT_BALANCE
         @limit = LIMIT
-
     end
 
     def top_up(amount)
-        if balance + amount > limit
-            raise "Cannot up anymore, you will exceed your limit of #{limit}"
-        else
-            @balance = balance + amount
-        end
+        fail "Cannot up anymore, you will exceed your limit of #{limit}" if balance + amount > limit
+        @balance += amount
     end
 
+    def deduct(amount)
+        @balance -= amount
+    end
 
 end
-
