@@ -2,10 +2,16 @@ require_relative './../lib/oystercard.rb'
 
 describe Oystercard do
     let(:entry_station) { double :entry_station }
+    let(:exit_station) { double :exit_station }
 
     it 'balance default value 0' do
         expect(subject.balance).to eq(0)
     end
+
+    it 'expects oystercard journey history to be empty' do
+        expect(subject.journey_list).to be_empty
+    end
+
 
     describe '#top_up' do
         it 'increases the balance by the passed amount' do
@@ -49,6 +55,15 @@ describe Oystercard do
     end
 
     describe "#touch_out" do
+        # it { is_expected.to respond_to(:touch_out).with(1).argument }
+
+        it 'expects exit station' do
+            subject.top_up(10)
+            subject.touch_in(:entry_station)
+            subject.touch_out(:exit_station)
+            expect(subject.exit_station).to eq :exit_station
+        end
+
         it 'sets in_journey? to false if currently true' do
             top_up_and_touch(10, true)   
             expect(subject).to_not be_in_journey

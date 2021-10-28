@@ -2,13 +2,15 @@ class Oystercard
     DEFAULT_BALANCE = 0
     JOURNEY_MIN = 1 
     LIMIT = 90
-    attr_reader :balance, :limit, :entry_station
+    attr_reader :balance, :limit, :entry_station, :journey_list, :exit_station
     
     def initialize
         @balance = DEFAULT_BALANCE
         @minimum = JOURNEY_MIN
         @limit = LIMIT
         @entry_station = nil
+        @journey_list = []
+        @exit_station = nil
     end
 
     def top_up(amount)
@@ -21,10 +23,10 @@ class Oystercard
         @entry_station = station
     end
 
-    def touch_out
+    def touch_out(station)
         fail "fail not in journey" if @journey == false
         deduct(2)
-        @entry_station = nil 
+        @exit_station = station
     end
 
     def in_journey?
@@ -35,6 +37,7 @@ class Oystercard
         #     return true
         # end
     end
+
 
     private
     
